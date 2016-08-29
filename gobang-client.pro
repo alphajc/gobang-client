@@ -19,6 +19,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwidget.h \
     connectserver.h \
-    messagehandle.h
+    messagehandle.h \
+    message.h
 
 FORMS    += mainwidget.ui
