@@ -34,7 +34,8 @@ Messages MessageHandle::analyzeMessages(QString data)
         }
         break;
     case MESSAGE_TYPE_REMOVE:
-    case MESSAGE_TYPE_INVIATION:
+    case MESSAGE_TYPE_INVITATION:
+    case MESSAGE_TYPE_REPLY:
         for(int i=1; i<temp.size(); ++i){
             msg.msg.append(temp[i]);
         }
@@ -49,9 +50,16 @@ QString MessageHandle::packageMesssages(Messages msg)
 {
     QString data;
     data = QString("%1").arg(msg.messageType);
-    for(int i=0; i<msg.msg.size(); ++i){
-        data.append("\n");
-        data.append(msg.msg.at(i).split("\t").at(0));
+    switch (msg.messageType) {
+    case MESSAGE_TYPE_INVITATION:
+    case MESSAGE_TYPE_REPLY:
+        for(int i=0; i<msg.msg.size(); ++i){
+            data.append("\n");
+            data.append(msg.msg.at(i).split("\t").at(0));
+        }
+        break;
+    default:
+        break;
     }
 
     return data;

@@ -6,8 +6,10 @@
 #include <QMessageBox>
 #include <QHostAddress>
 #include "connectserver.h"
+#include "connectplayer.h"
 #include "message.h"
 #include "messagehandle.h"
+#include "game.h"
 
 namespace Ui {
 class MainWidget;
@@ -25,7 +27,9 @@ public:
 
 private:
     Ui::MainWidget *ui;
+    Game *game;
     ConnectServer *connectServer;
+    ConnectPlayer *connectPlayer;
     MessageHandle *messageHandle;
 
 public slots:

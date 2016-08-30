@@ -15,11 +15,17 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwidget.cpp \
     connectserver.cpp \
-    messagehandle.cpp
+    messagehandle.cpp \
+    game.cpp \
+    connectplayer.cpp \
+    gamesocket.cpp
 
 HEADERS  += mainwidget.h \
     connectserver.h \
     messagehandle.h \
-    message.h
+    message.h \
+    game.h \
+    connectplayer.h \
+    gamesocket.h
 
 FORMS    += mainwidget.ui

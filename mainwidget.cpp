@@ -20,6 +20,7 @@ void MainWidget::init()
 {
     connectServer = ConnectServer::getInstance();
     messageHandle = MessageHandle::getInstance();
+    connectPlayer = ConnectPlayer::getInstance();
 }
 
 void MainWidget::setConnect()
@@ -72,12 +73,37 @@ void MainWidget::operateMessages(Messages msg)
         delete it;
         break;
     }
-    case MESSAGE_TYPE_INVIATION:
-        if( QMessageBox::Yes == QMessageBox::question(this, "inviation", QString("receive inviation from %1 ?")
-                                 .arg(msg.msg.at(0)), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes));
+    case MESSAGE_TYPE_INVITATION:{
+        QString data;
+        Messages messages;
+        messages.messageType = MESSAGE_TYPE_REPLY;
+        messages.msg.append(msg.msg.at(0));
+        if( QMessageBox::Yes == QMessageBox::question(this, "invitation", QString("receive invitation from %1 ?")
+                                 .arg(msg.msg.at(0)), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes)){
+            GameSocket *gameSocket = GameSocket::getInstance();
+            gameSocket->connectToHost(msg.msg);
+            game = new Game(this);
+            game->start();
+
+            messages.msg.append("ACCEPT");
+        }else{
+
+            messages.msg.append("REFUSED");
+        }
+
+        data = messageHandle->packageMesssages(messages);
+        qDebug() << "sender:" << data;
+        connectServer->write(data.toLatin1().data(),data.size());
         break;
+    }
     case MESSAGE_TYPE_CONNECTION:
     case MESSAGE_TYPE_REPLY:
+        if(msg.msg.at(0) == "ACCEPT"){
+            connectPlayer->close();
+            ui->labelGameStatus->setText(QString("playing against %1").arg(game->getSocket()->peerName()));
+        }else{
+            ui->labelGameStatus->setText("player refused!");
+        }
     case MESSAGE_TYPE_CONERROR:
     default:;
     }
@@ -86,11 +112,12 @@ void MainWidget::operateMessages(Messages msg)
 void MainWidget::on_listPlayers_doubleClicked(const QModelIndex &index)
 {
     Messages msg;
-    msg.messageType = MESSAGE_TYPE_INVIATION;
+    game = new Game(this);
+    game->start();
+    msg.messageType = MESSAGE_TYPE_INVITATION;
     msg.msg.append(connectServer->localAddress().toString());
     msg.msg.append(index.data().toString());
-    msg.msg.append("3277");
+    msg.msg.append(QString("%1").arg(connectPlayer->setRadomPort()));
     QString data = messageHandle->packageMesssages(msg);
-    qDebug() << data;
     connectServer->write(data.toLatin1().data(),data.size());
 }

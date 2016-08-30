@@ -14,7 +14,7 @@ void ConnectServer::init()
 void ConnectServer::newTCPConnect()
 {
     abort();
-    connectToHost("127.0.0.1",5267);
+    connectToHost("192.168.1.112",5267);
 }
 
 ConnectServer::ConnectServer()
