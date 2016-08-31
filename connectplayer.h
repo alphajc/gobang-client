@@ -21,6 +21,9 @@ public:
 public slots:
     void acceptConnection();
 
+signals:
+    void connected();
+
 };
 
 #endif // CONNECTPLAYER_H

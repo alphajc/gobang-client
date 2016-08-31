@@ -4,16 +4,12 @@
 Game::Game(QWidget *parent)
 {
     parent;
-}
-
-void Game::init()
-{
     gameSocket = GameSocket::getInstance();
 }
 
 void Game::setConnect()
 {
-    connect(getSocket(), SIGNAL(readyRead()), this, SLOT(recvMessage()));
+    connect(gameSocket, SIGNAL(setedSocket()), this, SLOT(setSocketConnect()));
 }
 
 QTcpSocket *Game::getSocket()
@@ -23,7 +19,6 @@ QTcpSocket *Game::getSocket()
 
 void Game::run()
 {
-    init();
     setConnect();
 }
 
@@ -31,4 +26,10 @@ void Game::recvMessage()
 {
     QString data = getSocket()->readAll();
     qDebug() << data;
+}
+
+void Game::setSocketConnect()
+{
+    connect(getSocket(), SIGNAL(readyRead()), this, SLOT(recvMessage()));
+    connect(getSocket(), SIGNAL(error(QAbstractSocket::SocketError)),gameSocket, SLOT(displayError(QAbstractSocket::SocketError)));
 }

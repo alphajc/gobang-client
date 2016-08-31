@@ -5,8 +5,8 @@ ConnectServer * ConnectServer::connectServer = NULL;
 void ConnectServer::init()
 {
     newTCPConnect();
+    messageHandle = MessageHandle::getInstance();
 
-    //readyRead()表示服务端发送数据过来即发动信号，接着revData()进行处理。
     connect(this,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayError(QAbstractSocket::SocketError)));
 
 }
@@ -14,7 +14,7 @@ void ConnectServer::init()
 void ConnectServer::newTCPConnect()
 {
     abort();
-    connectToHost("192.168.1.112",5267);
+    connectToHost("192.168.5.128",5267);
 }
 
 ConnectServer::ConnectServer()
@@ -29,6 +29,37 @@ ConnectServer * ConnectServer::getInstance()
     }
 
     return connectServer;
+}
+
+qint64 ConnectServer::sendToServer(MessageType type, QVariant data)
+{
+
+    Messages messages;
+    messages.messageType = type;
+    switch(type){
+    case MESSAGE_TYPE_INVITATION:{
+        messages.msg.append(localAddress().toString());
+        messages.msg.append(data.toString().split("\t").at(0));
+        ConnectPlayer *connectPlayer = ConnectPlayer::getInstance();
+        messages.msg.append(QString("%1").arg(connectPlayer->setRadomPort()));
+        break;
+    }
+    case MESSAGE_TYPE_REPLY:
+        messages.msg.append(data.toStringList());
+        break;
+    default:;
+    }
+
+    QString dat = messageHandle->packageMesssages(messages);
+    qDebug() << "sendToServer:" << dat;
+    return write(dat.toLatin1().data(),dat.size());
+}
+
+Messages ConnectServer::recvFromServer()
+{
+    QString data = readAll();
+    qDebug() << "recvFromServer:" << data;
+    return messageHandle->analyzeMessages(data);
 }
 
 void ConnectServer::displayError(QAbstractSocket::SocketError) //显示错误

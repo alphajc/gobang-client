@@ -9,8 +9,6 @@ class Game : public QThread
     Q_OBJECT
 public:
     Game(QWidget *parent = Q_NULLPTR);
-    void init();
-    void setConnect();
     QTcpSocket *getSocket();
 
 protected:
@@ -18,9 +16,11 @@ protected:
 
 private:
     GameSocket *gameSocket;
+    void setConnect();
 
 public slots:
     void recvMessage();
+    void setSocketConnect();
 
 };
 

@@ -7,19 +7,21 @@ class GameSocket:public QObject
 {
     Q_OBJECT
 private:
-    QTcpSocket *socket;
-    GameSocket();
+    QTcpSocket * socket;
     static GameSocket * gameSocket;
+    GameSocket();
 
 public:
     static GameSocket * getInstance();
     void setSocket(QTcpSocket *socket);
     QTcpSocket *getSocket();
     bool connectToHost(QStringList msg);
-    void setConnect();
 
 public slots:
     void displayError(QAbstractSocket::SocketError);
+
+signals:
+    void setedSocket();
 };
 
 #endif // GAMESOCKET_H

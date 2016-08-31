@@ -3,12 +3,10 @@
 
 #include <QWidget>
 #include <QAbstractSocket>
-#include <QMessageBox>
-#include <QHostAddress>
+
 #include "connectserver.h"
 #include "connectplayer.h"
 #include "message.h"
-#include "messagehandle.h"
 #include "game.h"
 
 namespace Ui {
@@ -30,14 +28,13 @@ private:
     Game *game;
     ConnectServer *connectServer;
     ConnectPlayer *connectPlayer;
-    MessageHandle *messageHandle;
 
 public slots:
     void recvMessage();
     void modifyState(QAbstractSocket::SocketState state);
     void operateMessages(Messages msg);
-private slots:
     void on_listPlayers_doubleClicked(const QModelIndex &index);
+    void finishedConnection();
 };
 
 #endif // MAINWIDGET_H

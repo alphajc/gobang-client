@@ -3,7 +3,9 @@
 
 GameSocket * GameSocket::gameSocket = NULL;
 
-GameSocket::GameSocket(){}
+GameSocket::GameSocket(){
+    socket = new QTcpSocket();
+}
 
 GameSocket * GameSocket::getInstance()
 {
@@ -17,6 +19,7 @@ GameSocket * GameSocket::getInstance()
 void GameSocket::setSocket(QTcpSocket *socket)
 {
     this->socket = socket;
+    emit setedSocket();
 }
 
 QTcpSocket *GameSocket::getSocket()
@@ -26,15 +29,10 @@ QTcpSocket *GameSocket::getSocket()
 
 bool GameSocket::connectToHost(QStringList msg)
 {
-    socket = new QTcpSocket();
+    socket->abort();
     socket->connectToHost(msg.at(0), msg.at(1).toInt());
 
     return true;
-}
-
-void GameSocket::setConnect()
-{
-    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(displayError(QAbstractSocket::SocketError)));
 }
 
 void GameSocket::displayError(QAbstractSocket::SocketError) //显示错误
